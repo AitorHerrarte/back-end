@@ -72,7 +72,7 @@ const AccountsController = {
   addAccountToUser: async (req, res) => {
     
     try {
-      console.log("antes del populate")
+      console.log("soy req.body", req.body)
       const user = await Users.findById(req.userInfo.id).populate("accounts");
       console.log("despues del populate", req.userInfo.id)
       const { accountName, balance } = req.body;
@@ -83,15 +83,18 @@ const AccountsController = {
         balance,
         user: user, // Asociar la orden con el ID del usuario que la crea
       });
-      console.log(user.accounts.balance,user.accounts.accountName)
+      console.log(newAccount)
     
       await newAccount.save();
+      user.accounts.push(accountName);
+      await user.save()
+      
       
 
       res.status(201).json({ message: "Orden agregada correctamente" });
     } catch (error) {
       console.error("Error al agregar la orden:", error);
-      res.status(500).json({ message: "Error al agregar la orden" });
+      res.status(500).json({ message: "Error al añadir account" });
     }
   },
 };
