@@ -53,9 +53,9 @@ const UserController = {
   getUserProfile: async (req, res) => {
     try {
       console.log("soy el req.info en UserController", req.userInfo.id);
-      const { email, _id, userName, role } =
+      const { email, _id, userName, role, accounts } =
         await User.findById(req.userInfo.id);
-      res.json({ email, _id, userName, role });
+      res.json({ email, _id, userName, role, accounts });
     } catch (error) {
       console.log("este es el error ", error);
       res.status(500).json({ error: "Error al buscar el usuario en /me" });

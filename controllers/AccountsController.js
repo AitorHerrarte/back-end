@@ -12,6 +12,18 @@ const AccountsController = {
       });
     }
   },
+  getAccountsOfUser: async (req, res) => {
+    try {
+      const user = await Users.findById(req.userInfo.id);
+      console.log(user)
+      // const accounts = user.accounts
+      res.json(user)
+    } catch (error) {
+      res.status(500).json({
+        error: "Ocurrió un error al buscar las accounts del user",
+      });
+    }
+  },
 
   getAccountsById: async (req, res) => {
     const { accountId } = req.params;
@@ -27,14 +39,12 @@ const AccountsController = {
     }
   },
 
-
-
   addAccount: async (req, res) => {
     const { accountName, balance } = req.body;
     try {
       const newAccount = new Accounts({
         accountName,
-        balance
+        balance,
       });
 
       await newAccount.save();
@@ -50,14 +60,13 @@ const AccountsController = {
     const { accountId } = req.params;
     try {
       await Accounts.deleteOne({ _id: accountId });
-      res.json("la account ha sido eliminada");
+      res.json("la account ha sido eliminada" );
     } catch (error) {
       res.status(500).json({
         error: "error al eliminar tu account",
       });
     }
   },
-
 
   updateAccount: async (req, res) => {
     const { accountId } = req.params;
@@ -70,26 +79,24 @@ const AccountsController = {
     }
   },
   addAccountToUser: async (req, res) => {
-    
     try {
-      console.log("soy req.body", req.body)
+      console.log("soy req.body", req.body);
       const user = await Users.findById(req.userInfo.id).populate("accounts");
-      console.log("despues del populate", req.userInfo.id)
+      console.log("despues del populate", req.userInfo.id);
       const { accountName, balance } = req.body;
-      console.log("soy reqbody", req.body)
+      console.log("soy reqbody", req.body);
 
       const newAccount = new Accounts({
         accountName,
         balance,
         user: user, // Asociar la orden con el ID del usuario que la crea
       });
-      console.log(newAccount)
-    
+      console.log(newAccount);
+
       await newAccount.save();
       user.accounts.push(accountName);
-      await user.save()
-      
-      
+      await user.save();
+      console.log(user)
 
       res.status(201).json({ message: "Orden agregada correctamente" });
     } catch (error) {
