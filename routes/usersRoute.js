@@ -13,6 +13,8 @@ usersRouter.patch("/admin/:userId", auth.checkIfAuth, userController.updateUser)
 usersRouter.put("/:userId", userController.putUser);
 usersRouter.patch("/updateUser", auth.checkIfAuth, userController.updateUserConfig);
 usersRouter.delete("/:userId", userController.deleteUser);
+usersRouter.patch("/updateUser", auth.checkIfAuth, userController.updateUserConfig);
+
 
 
 

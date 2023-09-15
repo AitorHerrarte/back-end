@@ -13,6 +13,10 @@ const AccountsSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
+  broker: {
+    type: String,
+    required: true,
+  },
   orders: [
     {
         type: mongoose.Schema.Types.ObjectId,

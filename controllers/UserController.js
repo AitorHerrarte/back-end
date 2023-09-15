@@ -53,15 +53,60 @@ const UserController = {
   getUserProfile: async (req, res) => {
     try {
       console.log("soy el req.info en UserController", req.userInfo.id);
-      const { email, _id, userName, role, accounts } =
+      const { email, _id, userName, accounts } =
         await User.findById(req.userInfo.id);
-      res.json({ email, _id, userName, role, accounts });
+      res.json({ email, _id, userName, accounts });
     } catch (error) {
       console.log("este es el error ", error);
       res.status(500).json({ error: "Error al buscar el usuario en /me" });
     }
   },
+  updateUserConfig: async (req, res) => {
+    const userId = req.userInfo.id;
+    const { userName, password, email } = req.body;
 
+    try {
+      if (password) {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        await User.findByIdAndUpdate(
+          userId,
+          { $set: { password: hashedPassword } },
+          { new: true }
+        );
+      }
+
+      if (userName) {
+        const existingUserName = await User.findOne({ userName });
+        console.log("estoy dentor de exisiting", existingUserName);
+        if (existingUserName) {
+          return res
+            .status(401)
+            .json({ error: "El nombre de usuario ya está registrado" });
+        }
+      }
+
+      if (email) {
+        const existingEmail = await User.findOne({ email });
+        if (existingEmail) {
+          console.log("soy existingEmail", existingEmail);
+          return res.status(401).json({ error: "El email ya está registrado" });
+        }
+      }
+      const user = await User.findByIdAndUpdate(
+        userId,
+        { $set: { userName, email } },
+        { new: true }
+      );
+
+      res.json(user);
+    } catch (error) {
+      console.error("Error al actualizar el nombre de usuario:", error);
+      res
+        .status(500)
+        .json({ error: "Error al actualizar el nombre de usuario" });
+    }
+  },
   addUser: async (req, res) => {
     console.log("soy add user");
     const { email, password, userName } = req.body;
@@ -90,20 +135,6 @@ const UserController = {
         mySecret,
         { expiresIn: "1h" }
       );
-
-      // const mailOptions = {
-      //   to: newUser.email,
-      //   subject: "Finantial Challenge : Registro finalizado. ",
-      //   text: "Bienvenido a nuestro juego",
-      // }
-
-      // try {
-      //   await transporter.sendMail(mailOptions);
-      // } catch (error) {
-      //   console.log(error);
-      // }
-
-      // console.log('despues de enviar mail');
       res.json({ message: "Registro exitoso", token });
       console.log("del adduser", token.data);
     } catch (error) {
@@ -118,6 +149,7 @@ const UserController = {
       res.json(`El usuario con id ${userId} ha sido eliminado`);
     
   },
+
 
   putUser: async (req, res) => {
     const { userId } = req.params;
@@ -189,28 +221,7 @@ const UserController = {
         .json({ error: "Error al actualizar el nombre de usuario" });
     }
   },
-//   getBalance: async (req, res) => {
-//     const { balance, account } = req.body;
-//     try {
-//       const accountData = await User.findOne({ account });
-//       if (account === accountData) {
-//         await User.updateOne(
-//           {
-//             account: account,
-//           },
-//           {
-//             $set: {
-//               balance,
-//             },
-//           }
-//         );
-//       } else {
-//         res.json("esta cuenta no esxiste");
-//       }
-//     } catch (error) {
-//       console.log("error al buscar la cuenta", error);
-//     }
-//   },
+ 
  };
 
 module.exports = UserController;

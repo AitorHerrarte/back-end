@@ -1,6 +1,6 @@
 const Accounts = require("../modules/accountModel");
 const Orders = require("../modules/orderModel");
-
+const Users = require("../modules/userModel");
 
 const OrdersController = {
   getOrders: async (req, res) => {
@@ -28,16 +28,24 @@ const OrdersController = {
     }
   },
 
-  getOrderByAccount: async (req, res) => {
-    const { orderAccount } = req.params;
+  ordersUser: async (req, res) => {
     try {
-      const order = await Orders.findOne({
-        account: orderAccount,
+      const user = await Users.findById(req.userInfo.id).populate({
+        path: "accounts",
+        populate: {
+          path: "orders",
+        },
       });
-      res.json(order);
-    } catch {
+      const allOrders = [];
+      for (const account of user.accounts) {
+        if (account.orders && account.orders.length > 0) {
+          allOrders.push(...account.orders);
+        }
+      }
+      res.json(allOrders);
+    } catch (error) {
       res.status(500).json({
-        error: "al buscar order por account",
+        error: "error al buscar order del user",
       });
     }
   },
@@ -65,7 +73,15 @@ const OrdersController = {
   deleteOrderById: async (req, res) => {
     const { orderId } = req.params;
     try {
-      await Orders.deleteOne({ _id: orderId });
+      const order = await Orders.findByIdAndRemove({ _id: orderId });
+      const account = await Accounts.findOne({ orders: orderId });
+      console.log(account.profit, "holagolaie");
+      const orderProfitAsNumber = parseFloat(order.orderProfit);
+      const newProfit = account.profit - orderProfitAsNumber;
+      account.profit = newProfit;
+      console.log(account.profit, "holagolaie");
+      account.orders.pull(orderId);
+      await account.save();
       res.json("la order ha sido eliminada");
     } catch (error) {
       res.status(500).json({
@@ -95,16 +111,18 @@ const OrdersController = {
       });
     }
   },
+
   addOrderToAccount: async (req, res) => {
     try {
-      console.log("hola", req.body);
-      const { date, description, pair,entryPrice,closePrice, orderProfit } = req.body;
-      console.log("hola")
-      // const image = req.file.buffer; // Asumimos que la imagen se envía como parte del formulario y se encuentra en req.file.buffer
-      const account = await Accounts.findById({ _id: accountId }).populate("orders");
+      console.log("soy addorder");
+      const accountId = req.body.account;
+      const account = await Accounts.findById(accountId).populate("orders");
       console.log("ser");
-      // console.log("este es el balance del user", user.balance)
-
+      const { date, description, pair, entryPrice, closePrice, orderProfit } =
+        req.body;
+      console.log("hola");
+      const newProfit = account.profit + orderProfit;
+      account.profit = newProfit;
       const newOrder = new Orders({
         date,
         account,
@@ -113,18 +131,29 @@ const OrdersController = {
         entryPrice,
         closePrice,
         orderProfit,
-        //   image,
-        user: user, // Asociar la orden con el ID del usuario que la crea
       });
-      console.log( account.orders.orderProfit)
-     
+
       await newOrder.save();
-      
+      account.orders.push(newOrder);
+      await account.save();
 
       res.status(201).json({ message: "Orden agregada correctamente" });
     } catch (error) {
       console.error("Error al agregar la orden:", error);
       res.status(500).json({ message: "Error al agregar la orden" });
+    }
+  },
+  getOrderByAccount: async (req, res) => {
+    const { orderAccount } = req.params;
+    try {
+      const order = await Orders.findOne({
+        account: orderAccount,
+      });
+      res.json(order);
+    } catch {
+      res.status(500).json({
+        error: "al buscar order por account",
+      });
     }
   },
 };

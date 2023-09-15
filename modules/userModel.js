@@ -6,9 +6,6 @@ const usersSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    account: {
-        type: String
-    },
     email: {
         type: String,
         required: true
@@ -22,6 +19,13 @@ const usersSchema = new mongoose.Schema({
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'accounts'
+        }
+
+    ],
+    notes: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'notes'
         }
 
     ],

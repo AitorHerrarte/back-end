@@ -3,6 +3,7 @@ require('dotenv').config();
 const Users = require("./routes/usersRoute");
 const Orders = require("./routes/ordersRoute");
 const Accounts = require('./routes/accountsRoute')
+const Notes = require('./routes/notesRoute');
 const express = require('express')
 const app = express()
 const port = 4003
@@ -12,6 +13,7 @@ app.use(cors())
 app.use("/users", Users)
 app.use("/orders", Orders)
 app.use("/accounts", Accounts)
+app.use("/notes", Notes)
 
 
 async function main() {

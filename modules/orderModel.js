@@ -3,14 +3,15 @@ const mongoose = require('mongoose');
 const OrdersSchema = mongoose.Schema({
   date: {
     type: Date,
-    // required: true
+    required: true
 },
   description: {
     type: String,
     required: true
 },
   account: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Account",
     required: true
 },
   pair: {
