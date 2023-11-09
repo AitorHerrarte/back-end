@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const CodereTorrejonNumbersSchema = mongoose.Schema({
+const NumbersSchema = mongoose.Schema({
 
   numero: {
     type: Number,
@@ -9,6 +9,7 @@ const CodereTorrejonNumbersSchema = mongoose.Schema({
 
 });
 
-const CodereTorrejonNumbers = mongoose.model("codereTorrejon", CodereTorrejonNumbersSchema);
+const Numbers = mongoose.model("numbers", NumbersSchema);
 
-module.exports = CodereTorrejonNumbers;
+
+module.exports = Numbers;

@@ -1,11 +1,11 @@
 // En NumbersController.js
 
-const CodereTorrejonNumbers = require("../modules/codereTorrejonModel");
+const Numbers = require("../modules/codereTorrejonModel");
 
 const NumbersController = {
   getNumbers: async (req, res) => {
     try {
-      const allNumbers = await CodereTorrejonNumbers.find();
+      const allNumbers = await Numbers.find();
       res.json(allNumbers);
     } catch (error) {
       console.error("Error al obtener los números:", error);
@@ -17,7 +17,7 @@ const NumbersController = {
     const { numero } = req.body;
 
     try {
-      const newNumber = new CodereTorrejonNumbers({
+      const newNumber = new Numbers({
         numero,
       });
 
@@ -31,7 +31,7 @@ const NumbersController = {
 
   getAllNextNumbers: async (req, res) => {
     try {
-      const allNumbers = await CodereTorrejonNumbers.find();
+      const allNumbers = await Numbers.find();
       const nextNumbersMap = {};
 
       allNumbers.forEach((num, index, array) => {
@@ -58,7 +58,7 @@ const NumbersController = {
     const { numero } = req.params;
 
     try {
-      const occurrences = await CodereTorrejonNumbers.find({ numero });
+      const occurrences = await Numbers.find({ numero });
       const uniqueNextNumbersSet = new Set();
 
       occurrences.forEach((occurrence, index, array) => {
