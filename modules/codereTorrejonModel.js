@@ -9,6 +9,6 @@ const NumbersSchema = mongoose.Schema({
 
 });
 
-const Numbers = mongoose.model("numbers", NumbersSchema);
+const Numbers = mongoose.model("codereTorrejon", NumbersSchema);
 
 module.exports = Numbers;

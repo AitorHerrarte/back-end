@@ -1,7 +1,7 @@
 // En numbersRoute.js
 
 const express = require("express");
-const NumbersController = require("../controllers/NumbersController");
+const NumbersController = require("../controllers/CodereTorrejonController");
 
 const numbersRouter = express.Router();
 
