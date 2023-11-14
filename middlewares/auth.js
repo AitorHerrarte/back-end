@@ -28,7 +28,7 @@ const auth = {
         }
     },
     
-    publicMethod: async (req, res) => {
+    publicMethod: async (req, res, next) => {
         next();
     }
 
