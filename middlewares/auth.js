@@ -26,6 +26,10 @@ const auth = {
             res.status(401).send("token inválido2");
 
         }
+    },
+    
+    publicMethod: async (req, res) => {
+        next();
     }
 
 }
