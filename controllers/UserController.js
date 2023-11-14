@@ -135,16 +135,6 @@ const UserController = {
         mySecret,
         { expiresIn: "1h" }
       );
-      const mailOptions = {
-        to: newUser.email,
-        subject: "Trading proyect : Registro finalizado. ",
-        text: "Bienvenido a nuestro app para administrar tus operaciones en bolsa",
-      };
-      try {
-        await transporter.sendMail(mailOptions);
-      } catch (error) {
-        console.error(error);
-      }
       res.json({ message: "Registro exitoso", token });
       console.log("del adduser", token.data);
     } catch (error) {
