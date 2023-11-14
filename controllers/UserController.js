@@ -114,12 +114,12 @@ const UserController = {
       const existingEmail = await User.findOne({ email });
       if (existingEmail) {
         console.log(email);
-        return res.status(401).json({ error: "El email ya está registrado" });
+        return res.status(500).json({ error: "El email ya está registrado" });
       }
       const existingUserName = await User.findOne({ userName });
       if (existingUserName) {
         return res
-          .status(401)
+          .status(500)
           .json({ error: "El nombre de usuario ya está registrado" });
       }
       const newUser = new User({
