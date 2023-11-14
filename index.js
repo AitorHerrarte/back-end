@@ -16,6 +16,7 @@ app.use("/accounts", Accounts)
 app.use("/notes", Notes)
 
 
+
 async function main() {
     return await mongoose.connect(process.env.CONNECTIONDB)
   }
